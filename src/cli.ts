@@ -2,10 +2,18 @@
 import {
 	$,
 	cd,
-	//  path
+	//  path,
+	fs,
 } from "zx";
 
 const zOSRepo = "https://github.com/zer0-os/zOS.git"; // using https for no-auth directive
+
+const npmrcContents = `
+@zer0-os:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=$\{GITHUB_REGISTRY_TOKEN}
+legacy-peer-deps=true
+audit=false
+`;
 
 async function main() {
 	// At this point, we are at the root based of the current zApp.
@@ -22,11 +30,14 @@ async function main() {
 	cd("_zOS");
 	await $`git clone ${zOSRepo}`;
 	cd("zOS");
+	// We need to create an .npmrc file to access GitHub Packages.
+	fs.writeFileSync(".npmrc", npmrcContents);
+
 	await $`npm i`;
 	await $`npm i ../../`;
 	await $`npm run build`;
 	// At this point, we should have zOS with the zApp ready.
-  // Publish `_zOS/zOS/build/` folder.
+	// Publish `_zOS/zOS/build/` folder.
 }
 
 main();
