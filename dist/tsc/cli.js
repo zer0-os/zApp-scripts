@@ -17,6 +17,7 @@ async function main() {
     // Let's save the current directory just so that we know where we are.
     // const zAppDir = path.join((await $`pwd`).stdout.trim(), "dist");
     // Let's prepare zOS now.
+    await $ `rm -rf _zOS`;
     await $ `mkdir _zOS`;
     cd("_zOS");
     await $ `git clone ${zOSRepo}`;
